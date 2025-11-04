@@ -9,7 +9,6 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfigurat
 @Configuration
 @RequiredArgsConstructor
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
-
     @Value("${spring.elasticsearch.uris}")
     private String elasticsearchUri;
 
