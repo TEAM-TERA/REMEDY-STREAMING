@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 import tera.remedy.streaming.application.dto.SpotifyTrackInfo;
+import tera.remedy.streaming.application.spotify.exception.SpotifyApiCallFailedException;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -24,7 +25,7 @@ public class SpotifySearchService {
 
     private String accessToken = spotifyAccessTokenProvider.getAccessToken();
 
-    public SpotifyTrackInfo search(String songTitle, String artist) throws IOException {
+    public SpotifyTrackInfo search(String songTitle, String artist) {
         String query = buildSearchQuery(songTitle, artist);
         return searchTrackInfo(query);
     }
@@ -53,7 +54,7 @@ public class SpotifySearchService {
 
             return spotifySearchJsonParser.parse(jsonResponse);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SpotifyApiCallFailedException();
         }
     }
 
