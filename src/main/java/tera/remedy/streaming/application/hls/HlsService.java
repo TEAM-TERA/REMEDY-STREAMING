@@ -1,6 +1,7 @@
 package tera.remedy.streaming.application.hls;
 
 import org.springframework.stereotype.Service;
+import tera.remedy.streaming.application.hls.exception.HlsConvertFailedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +39,7 @@ public class HlsService {
 
 
         if (exitCode != 0) {
-            throw new RuntimeException("HLS 변환 실패");
+            throw new HlsConvertFailedException();
         }
 
         Files.deleteIfExists(Paths.get(mp3FilePath));

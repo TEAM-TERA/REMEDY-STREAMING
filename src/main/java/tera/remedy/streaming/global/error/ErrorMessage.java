@@ -5,6 +5,7 @@ public enum ErrorMessage {
     INVALID_SPOTIFY_TOKEN_REQUEST("스포티파이 Access Token 요청에 실패했습니다."),
     YOUTUBE_DOWNLOAD_TIMEOUT("유튜브 다운로드 타임아웃 발생!"),
     YOUTUBE_DOWNLOAD_FAILED("유튜브 다운로드 실패!"),
+    HLS_CONVERT_FAILED("HLS 변환 실패!"),
     ;
 
     public final String content;
