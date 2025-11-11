@@ -6,6 +6,8 @@ public enum ErrorMessage {
     YOUTUBE_DOWNLOAD_TIMEOUT("유튜브 다운로드 타임아웃 발생!"),
     YOUTUBE_DOWNLOAD_FAILED("유튜브 다운로드 실패!"),
     HLS_CONVERT_FAILED("HLS 변환 실패!"),
+    AUDIO_FILE_SAVE_FAILED("오디오 파일 저장 실패!"),
+    DIRECTORY_CREATE_FAILED("디렉토리 생성 실패!"),
     ;
 
     public final String content;

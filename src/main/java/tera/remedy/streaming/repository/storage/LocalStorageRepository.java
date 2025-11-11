@@ -1,6 +1,8 @@
 package tera.remedy.streaming.repository.storage;
 
 import org.springframework.stereotype.Repository;
+import tera.remedy.streaming.repository.storage.exception.AudioFileSaveFailedException;
+import tera.remedy.streaming.repository.storage.exception.DirectoryCreateFailedException;
 
 import java.io.IOException;
 
@@ -22,7 +24,7 @@ public class LocalStorageRepository implements StorageRepository {
             Files.move(tempFilePath, savePath);
             return AUDIO_DIR + "/" + saveFileName;
         } catch (IOException e) {
-            throw new RuntimeException("다운로드된 오디오 파일 저장 실패", e);
+            throw new AudioFileSaveFailedException();
         }
     }
 
@@ -31,7 +33,7 @@ public class LocalStorageRepository implements StorageRepository {
             Path audioPath = Path.of(PATH, AUDIO_DIR);
             Files.createDirectories(audioPath);
         } catch(IOException e){
-            throw new RuntimeException("디렉토리 생성 실패",e);
+            throw new DirectoryCreateFailedException();
         }
     }
 }
