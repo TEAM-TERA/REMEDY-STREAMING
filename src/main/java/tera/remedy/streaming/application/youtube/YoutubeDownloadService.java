@@ -1,8 +1,11 @@
 package tera.remedy.streaming.application.youtube;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import tera.remedy.streaming.application.youtube.exception.YoutubeDownloadFailedException;
 import tera.remedy.streaming.application.youtube.exception.YoutubeDownloadTimeoutException;
+import tera.remedy.streaming.repository.storage.StorageRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,13 +16,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class YoutubeDownloadService {
-    private String downloadAudio(String videoId, String songTitle) throws IOException, InterruptedException {
-        Path downloadPath = Paths.get("./songs");
-        Files.createDirectories(downloadPath);
 
-        String outputPath = downloadPath.resolve(songTitle + ".%(ext)s").toString();
-        String finalPath = downloadPath.resolve(songTitle + ".mp3").toString();
+    private final StorageRepository storageRepository;
+    public String downloadAudio(String videoId, String songTitle) throws IOException, InterruptedException {
+
+        Path tempDownloadPath = Paths.get(System.getProperty("java.io.tmpdir"), "youtube-downloads");
+        Files.createDirectories(tempDownloadPath);
+
+        String outputPath = tempDownloadPath.resolve(songTitle + ".%(ext)s").toString();
+        Path tempFilePath = tempDownloadPath.resolve(songTitle + ".mp3");
 
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "yt-dlp",
@@ -47,7 +55,10 @@ public class YoutubeDownloadService {
                 throw new YoutubeDownloadFailedException();
             }
 
-            return finalPath;
+            return storageRepository.saveDownloadAudio(tempFilePath, songTitle);
+        } catch (Exception e) {
+            Files.deleteIfExists(tempFilePath);
+            throw e;
         }
     }
 }
