@@ -15,6 +15,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -60,5 +64,28 @@ public class YoutubeDownloadService {
             Files.deleteIfExists(tempFilePath);
             throw e;
         }
+    }
+    public int getDuration(String videoId) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(
+                "yt-dlp",
+                "--print", "duration",
+                "https://www.youtube.com/watch?v=" + videoId
+        );
+
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream())
+        );
+        String output = reader.readLine();
+
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0 || output == null) {
+            throw new YoutubeDownloadFailedException();
+        }
+
+        return Integer.parseInt(output.trim());
     }
 }
