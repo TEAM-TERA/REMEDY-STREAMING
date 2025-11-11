@@ -31,10 +31,7 @@ public class LocalStorageRepository implements StorageRepository {
     public LocalStorageRepository(){
         try{
             Path audioPath = Path.of(PATH, AUDIO_DIR);
-            Path imagePath = Path.of(PATH, IMAGE_DIR);
-
             Files.createDirectories(audioPath);
-            Files.createDirectories(imagePath);
         } catch(IOException e){
             throw new RuntimeException("디렉토리 생성 실패",e);
         }
