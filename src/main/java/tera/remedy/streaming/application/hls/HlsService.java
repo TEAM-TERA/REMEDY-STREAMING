@@ -12,7 +12,6 @@ import java.util.UUID;
 public class HlsService {
 
     private static final String HLS_PATH = "/app/songs/hls";
-    private static final int SEGMENT_DURATION = 10;
 
     public String convertToHls(String mp3FilePath) throws IOException, InterruptedException {
 
@@ -29,8 +28,8 @@ public class HlsService {
                 "-f", "hls",
                 "-hls_time", "10",
                 "-hls_list_size", "0",
-                "-hls_segment_filename", hlsDir + "/segment_%03d.ts",
-                hlsDir + "/playlist.m3u8"
+                "-hls_segment_filename", hlsDir.resolve("segment_%03d.ts").toString(),
+                hlsDir.resolve("playlist.m3u8").toString()
         );
 
         processBuilder.redirectErrorStream(true);
