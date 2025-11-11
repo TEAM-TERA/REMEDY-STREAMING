@@ -15,32 +15,6 @@ public class LocalStorageRepository implements StorageRepository {
 
     private static final String PATH = "/app/songs";
     private static final String AUDIO_DIR = "audio";
-    private static final String IMAGE_DIR = "images";
-
-    public String downloadImage(String imageUrl, String fileName){
-
-        Path savePath = Path.of(PATH, IMAGE_DIR, fileName);
-
-        try {
-            URL url = new URL(imageUrl);
-
-            try (InputStream in = url.openStream();
-            FileOutputStream out = new FileOutputStream(savePath.toFile())) {
-
-                byte[] buffer = new byte[1024];
-
-                int readByte;
-
-                while((readByte = in.read(buffer)) != -1){
-                    out.write(buffer, 0, readByte);
-                }
-            }
-            return IMAGE_DIR + "/" + fileName;
-        } catch (IOException e){
-            throw new RuntimeException("이미지 다운로드 실패", e);
-        }
-
-    }
 
     public String saveDownloadAudio(Path tempFilePath, String fileName) {
         String saveFileName = UUID.randomUUID() + "_" + fileName + ".mp3";
