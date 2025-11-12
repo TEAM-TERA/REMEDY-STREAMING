@@ -16,7 +16,7 @@ public class SpotifySearchJsonParser {
 
             String albumImageUrl = album.path("images").get(0).path("url").asText();
             String artist = track.path("artists").get(0).path("name").asText();
-            String title = track.path("title").asText();
+            String title = track.path("name").asText();
 
             return new SpotifyTrackInfo(title, albumImageUrl, artist);
         }
