@@ -1,7 +1,7 @@
 services:
-  elasticsearch:
+  remedy-streaming-elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-    container_name: elasticsearch
+    container_name: remedy-streaming-elastic
     env_file:
       - .env
     environment:
@@ -25,13 +25,13 @@ services:
       retries: 10
       start_period: 20s
 
-  spring-boot:
+  remedy-streaming-app:
     build: .
-    container_name: spring-boot
+    container_name: remedy-streaming-app
     env_file:
       - .env
     depends_on:
-      elasticsearch:
+      remedy-streaming-elastic:
         condition: service_healthy
     environment:
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
