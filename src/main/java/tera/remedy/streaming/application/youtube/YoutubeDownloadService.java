@@ -26,23 +26,14 @@ public class YoutubeDownloadService {
 
     private final StorageRepository storageRepository;
     public String downloadAudio(String songTitle, String artist) throws IOException, InterruptedException {
-        String searchQuery = songTitle + " " + artist;
+        String searchQuery = buildSearchQuery(songTitle, artist);
 
-        Path tempDownloadPath = Paths.get(System.getProperty("java.io.tmpdir"), "youtube-downloads");
-        Files.createDirectories(tempDownloadPath);
+        Path tempDownloadPath = createTempDownloadDirectory();
 
         String outputPath = tempDownloadPath.resolve(songTitle + ".%(ext)s").toString();
         Path tempFilePath = tempDownloadPath.resolve(songTitle + ".mp3");
 
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "yt-dlp",
-                "--extract-audio",
-                "--audio-format", "mp3",
-                "--audio-quality", "192K",
-                "--output", outputPath,
-                "--no-playlist",
-                "ytsearch1:" + searchQuery
-        );
+        ProcessBuilder processBuilder = createDownloadProcessBuilder(searchQuery, outputPath);
 
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
@@ -67,13 +58,9 @@ public class YoutubeDownloadService {
         }
     }
     public int getDuration(String songTitle, String artist) throws IOException, InterruptedException {
-        String searchQuery = songTitle + " " + artist;
+        String searchQuery = buildSearchQuery(songTitle, artist);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "yt-dlp",
-                "--print", "duration",
-                "ytsearch1:" + searchQuery
-        );
+        ProcessBuilder processBuilder = createDurationProcessBuilder(searchQuery);
 
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
@@ -82,6 +69,48 @@ public class YoutubeDownloadService {
                 new InputStreamReader(process.getInputStream())
         );
 
+        String output = parseDurationFromOutput(reader);
+
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0 || output == null) {
+            throw new YoutubeDownloadFailedException();
+        }
+
+        return Integer.parseInt(output.trim());
+    }
+
+    private String buildSearchQuery(String songTitle, String artist) {
+        return songTitle + " " + artist;
+    }
+
+    private Path createTempDownloadDirectory() throws IOException {
+        Path tempDownloadPath = Paths.get(System.getProperty("java.io.tmpdir"), "youtube-downloads");
+        Files.createDirectories(tempDownloadPath);
+        return tempDownloadPath;
+    }
+
+    private ProcessBuilder createDownloadProcessBuilder(String searchQuery, String outputPath) {
+        return new ProcessBuilder(
+                "yt-dlp",
+                "--extract-audio",
+                "--audio-format", "mp3",
+                "--audio-quality", "192K",
+                "--output", outputPath,
+                "--no-playlist",
+                "ytsearch1:" + searchQuery
+        );
+    }
+
+    private ProcessBuilder createDurationProcessBuilder(String searchQuery) {
+        return new ProcessBuilder(
+                "yt-dlp",
+                "--print", "duration",
+                "ytsearch1:" + searchQuery
+        );
+    }
+
+    private String parseDurationFromOutput(BufferedReader reader) throws IOException {
         String output = null;
         String line;
         while ((line = reader.readLine()) != null) {
@@ -97,13 +126,6 @@ public class YoutubeDownloadService {
                 }
             }
         }
-
-        int exitCode = process.waitFor();
-
-        if (exitCode != 0 || output == null) {
-            throw new YoutubeDownloadFailedException();
-        }
-
-        return Integer.parseInt(output.trim());
+        return output;
     }
 }
