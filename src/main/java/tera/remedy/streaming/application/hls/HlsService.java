@@ -21,15 +21,45 @@ public class HlsService {
     public String convertToHls(String mp3FilePath) throws IOException, InterruptedException {
         log.info("HLS 변환 시작: {}", mp3FilePath);
 
-        // 입력 파일 존재 확인
         validateFileExists(mp3FilePath);
 
         String hlsId = UUID.randomUUID().toString();
+        Path hlsDir = createHlsDirectory(hlsId);
+
+        ProcessBuilder processBuilder = createFfmpegProcessBuilder(mp3FilePath, hlsDir);
+
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+
+        StringBuilder output = readProcessOutput(process);
+
+        int exitCode = process.waitFor();
+        log.info("FFmpeg 종료 코드: {}", exitCode);
+
+        validateConversionSuccess(exitCode, output);
+
+        Files.deleteIfExists(Paths.get(mp3FilePath));
+        log.info("HLS 변환 완료: {}", hlsId);
+
+        return buildHlsPath(hlsId);
+    }
+
+    private void validateFileExists(String mp3FilePath) {
+        if (!Files.exists(Paths.get(mp3FilePath))) {
+            log.error("입력 파일이 존재하지 않습니다: {}", mp3FilePath);
+            throw new HlsConvertFailedException();
+        }
+    }
+
+    private Path createHlsDirectory(String hlsId) throws IOException {
         Path hlsDir = Paths.get(HLS_PATH, hlsId);
         Files.createDirectories(hlsDir);
         log.info("HLS 디렉토리 생성: {}", hlsDir);
+        return hlsDir;
+    }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(
+    private ProcessBuilder createFfmpegProcessBuilder(String mp3FilePath, Path hlsDir) {
+        return new ProcessBuilder(
                 "ffmpeg",
                 "-i", mp3FilePath,
                 "-codec:a", "aac",
@@ -41,11 +71,9 @@ public class HlsService {
                 "-hls_segment_filename", hlsDir.resolve("segment_%03d.ts").toString(),
                 hlsDir.resolve("playlist.m3u8").toString()
         );
+    }
 
-        processBuilder.redirectErrorStream(true);
-        Process process = processBuilder.start();
-
-        // FFmpeg 출력 읽기
+    private StringBuilder readProcessOutput(Process process) throws IOException {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream())
         );
@@ -56,25 +84,17 @@ public class HlsService {
             output.append(line).append("\n");
             log.debug("FFmpeg: {}", line);
         }
+        return output;
+    }
 
-        int exitCode = process.waitFor();
-        log.info("FFmpeg 종료 코드: {}", exitCode);
-
+    private void validateConversionSuccess(int exitCode, StringBuilder output) {
         if (exitCode != 0) {
             log.error("FFmpeg 변환 실패. 전체 출력:\n{}", output);
             throw new HlsConvertFailedException();
         }
-
-        Files.deleteIfExists(Paths.get(mp3FilePath));
-        log.info("HLS 변환 완료: {}", hlsId);
-
-        return "hls/" + hlsId + "/playlist.m3u8";
     }
 
-    private void validateFileExists(String mp3FilePath) {
-        if (!Files.exists(Paths.get(mp3FilePath))) {
-            log.error("입력 파일이 존재하지 않습니다: {}", mp3FilePath);
-            throw new HlsConvertFailedException();
-        }
+    private String buildHlsPath(String hlsId) {
+        return "hls/" + hlsId + "/playlist.m3u8";
     }
 }
