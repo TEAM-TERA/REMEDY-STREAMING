@@ -22,11 +22,7 @@ public class HlsService {
         log.info("HLS 변환 시작: {}", mp3FilePath);
 
         // 입력 파일 존재 확인
-        Path inputPath = Paths.get(mp3FilePath);
-        if (!Files.exists(inputPath)) {
-            log.error("입력 파일이 존재하지 않습니다: {}", mp3FilePath);
-            throw new HlsConvertFailedException();
-        }
+        validateFileExists(mp3FilePath);
 
         String hlsId = UUID.randomUUID().toString();
         Path hlsDir = Paths.get(HLS_PATH, hlsId);
@@ -75,4 +71,10 @@ public class HlsService {
         return "hls/" + hlsId + "/playlist.m3u8";
     }
 
+    private void validateFileExists(String mp3FilePath) {
+        if (!Files.exists(Paths.get(mp3FilePath))) {
+            log.error("입력 파일이 존재하지 않습니다: {}", mp3FilePath);
+            throw new HlsConvertFailedException();
+        }
+    }
 }
