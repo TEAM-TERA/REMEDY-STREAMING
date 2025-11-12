@@ -23,7 +23,7 @@ public class SpotifySearchService {
     private final SpotifySearchJsonParser spotifySearchJsonParser;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private String accessToken = spotifyAccessTokenProvider.getAccessToken();
+    private String accessToken;
 
     public SpotifyTrackInfo search(String songTitle, String artist) {
         String query = buildSearchQuery(songTitle, artist);
@@ -31,6 +31,10 @@ public class SpotifySearchService {
     }
 
     private SpotifyTrackInfo searchTrackInfo(String query) {
+        if (accessToken == null) {
+            accessToken = spotifyAccessTokenProvider.getAccessToken();
+        }
+
         String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
         String url = "https://api.spotify.com/v1/search?q=" + encodedQuery + "&type=track&limit=1";
 

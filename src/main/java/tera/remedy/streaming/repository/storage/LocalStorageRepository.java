@@ -22,7 +22,7 @@ public class LocalStorageRepository implements StorageRepository {
 
         try {
             Files.move(tempFilePath, savePath);
-            return AUDIO_DIR + "/" + saveFileName;
+            return savePath.toString();
         } catch (IOException e) {
             throw new AudioFileSaveFailedException();
         }

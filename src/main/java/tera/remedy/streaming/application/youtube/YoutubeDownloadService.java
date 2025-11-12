@@ -25,7 +25,8 @@ import java.io.InputStreamReader;
 public class YoutubeDownloadService {
 
     private final StorageRepository storageRepository;
-    public String downloadAudio(String videoId, String songTitle) throws IOException, InterruptedException {
+    public String downloadAudio(String songTitle, String artist) throws IOException, InterruptedException {
+        String searchQuery = songTitle + " " + artist;
 
         Path tempDownloadPath = Paths.get(System.getProperty("java.io.tmpdir"), "youtube-downloads");
         Files.createDirectories(tempDownloadPath);
@@ -40,7 +41,7 @@ public class YoutubeDownloadService {
                 "--audio-quality", "192K",
                 "--output", outputPath,
                 "--no-playlist",
-                "https://www.youtube.com/watch?v=" + videoId
+                "ytsearch1:" + searchQuery
         );
 
         processBuilder.redirectErrorStream(true);
@@ -65,11 +66,13 @@ public class YoutubeDownloadService {
             throw e;
         }
     }
-    public int getDuration(String videoId) throws IOException, InterruptedException {
+    public int getDuration(String songTitle, String artist) throws IOException, InterruptedException {
+        String searchQuery = songTitle + " " + artist;
+
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "yt-dlp",
                 "--print", "duration",
-                "https://www.youtube.com/watch?v=" + videoId
+                "ytsearch1:" + searchQuery
         );
 
         processBuilder.redirectErrorStream(true);
@@ -78,7 +81,22 @@ public class YoutubeDownloadService {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream())
         );
-        String output = reader.readLine();
+
+        String output = null;
+        String line;
+        while ((line = reader.readLine()) != null) {
+
+            if (!line.startsWith("WARNING") && !line.trim().isEmpty()) {
+                try {
+                    Integer.parseInt(line.trim());
+                    output = line;
+                    break;
+                } catch (NumberFormatException e) {
+                    // 숫자가 아니면 계속 다음 라인 읽기
+                    continue;
+                }
+            }
+        }
 
         int exitCode = process.waitFor();
 

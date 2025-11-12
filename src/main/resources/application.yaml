@@ -3,4 +3,9 @@ spring:
     name: Remedy-Streaming
 
   elasticsearch:
-    uris: ${ELASTICSEARCH_URI}
+    uris: ${ELASTICSEARCH_URL}
+
+spotify:
+  client:
+    id: ${SPOTIFY_CLIENT_ID}
+    secret: ${SPOTIFY_CLIENT_SECRET}

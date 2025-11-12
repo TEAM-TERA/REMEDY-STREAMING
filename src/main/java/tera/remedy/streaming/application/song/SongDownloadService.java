@@ -19,13 +19,13 @@ public class SongDownloadService {
     private final YoutubeDownloadService youtubeDownloadService;
     private final HlsService hlsService;
 
-    public Song songDownload(String songTitle, String artist, String youtubeVideoId)
+    public Song songDownload(String songTitle, String artist)
         throws IOException, InterruptedException {
 
         SpotifyTrackInfo trackInfo = spotifySearchService.search(songTitle, artist);
 
-        int duration = youtubeDownloadService.getDuration(youtubeVideoId);
-        String audioPath = youtubeDownloadService.downloadAudio(youtubeVideoId, songTitle);
+        int duration = youtubeDownloadService.getDuration(songTitle, artist);
+        String audioPath = youtubeDownloadService.downloadAudio(songTitle, artist);
         String hlsPath = hlsService.convertToHls(audioPath);
 
         Song song = new Song(
