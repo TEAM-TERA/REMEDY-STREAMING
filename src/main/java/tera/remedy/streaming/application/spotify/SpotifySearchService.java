@@ -66,7 +66,7 @@ public class SpotifySearchService {
 
     private String buildSearchUrl(String query) {
         String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-        return "https://api.spotify.com/v1/search?q=" + encodedQuery + "&type=track&limit=1";
+        return "https://api.spotify.com/v1/search?q=" + encodedQuery + "&type=track&locale=ko_KR&limit=1";
     }
 
     private HttpGet createHttpGetWithAuth(String url) {
