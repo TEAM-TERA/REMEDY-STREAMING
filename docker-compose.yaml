@@ -2,6 +2,9 @@ services:
   remedy-streaming-elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
     container_name: remedy-streaming-elastic
+    ports:
+      - "9200:9200"
+      - "9300:9300"
     env_file:
       - .env
     environment:
