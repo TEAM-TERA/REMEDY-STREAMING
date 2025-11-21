@@ -41,7 +41,7 @@ public class HlsService {
         Files.deleteIfExists(Paths.get(mp3FilePath));
         log.info("HLS 변환 완료: {}", hlsId);
 
-        return buildHlsPath(hlsId);
+        return hlsId;
     }
 
     private void validateFileExists(String mp3FilePath) {
@@ -92,9 +92,5 @@ public class HlsService {
             log.error("FFmpeg 변환 실패. 전체 출력:\n{}", output);
             throw new HlsConvertFailedException();
         }
-    }
-
-    private String buildHlsPath(String hlsId) {
-        return "hls/" + hlsId;
     }
 }

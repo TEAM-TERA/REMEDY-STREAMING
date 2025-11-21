@@ -28,7 +28,7 @@ public class SongController {
                 song.getTitle(),
                 song.getArtist(),
                 song.getDuration(),
-                song.getHlsPath(),
+                song.getHlsId(),
                 song.getAlbumImagePath()
         );
 
