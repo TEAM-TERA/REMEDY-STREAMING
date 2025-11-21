@@ -59,9 +59,21 @@ services:
     networks:
       - remedy-network
 
+  remedy-streaming-nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: remedy-streaming-nginx-exporter
+    ports:
+      - "9113:9113"
+    depends_on:
+      - remedy-streaming-nginx
+    command: >
+      -nginx.scrape-uri http://remedy-streaming-nginx:8081/nginx_status
+    networks:
+      - remedy-network
+
   remedy-streaming-prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
+    container_name: remedy-streaming-prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
@@ -73,7 +85,7 @@ services:
 
   remedy-streaming-grafana:
     image: grafana/grafana:latest
-    container_name: grafana
+    container_name: remedy-streaming-grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
