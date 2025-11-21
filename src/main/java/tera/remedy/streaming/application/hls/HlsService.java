@@ -66,7 +66,7 @@ public class HlsService {
                 "-b:a", "192k",
                 "-vn",
                 "-f", "hls",
-                "-hls_time", "10",
+                "-hls_time", "2",
                 "-hls_list_size", "0",
                 "-hls_segment_filename", hlsDir.resolve("segment_%03d.ts").toString(),
                 hlsDir.resolve("playlist.m3u8").toString()
