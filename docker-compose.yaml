@@ -78,6 +78,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
       - "3000:3000"
+    networks:
+      - remedy-network
     depends_on:
       - remedy-streaming-prometheus
 
