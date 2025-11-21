@@ -37,6 +37,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./songs/hls:/app/hls:ro
+        - nginx_logs:/var/log/nginx
     depends_on:
       - remedy-streaming-app
     networks:
@@ -76,6 +77,7 @@ services:
     container_name: remedy-streaming-prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
     networks:
@@ -83,17 +85,20 @@ services:
     depends_on:
       - remedy-streaming-nginx
 
+
   remedy-streaming-grafana:
     image: grafana/grafana:latest
     container_name: remedy-streaming-grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     ports:
       - "3000:3000"
     networks:
       - remedy-network
     depends_on:
       - remedy-streaming-prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   remedy-network:
@@ -101,4 +106,10 @@ networks:
 
 volumes:
   elasticsearch_data:
+    driver: local
+  grafana_data:
+    driver: local
+  nginx_logs:
+    driver: local
+  prometheus_data:
     driver: local
