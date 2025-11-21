@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y \
     python3 \
     ffmpeg \
     curl \
-    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # yt-dlp 설치 (Debian PEP 668 회피)

@@ -31,15 +31,10 @@ public class SpotifySearchService {
     }
 
     private SpotifyTrackInfo searchTrackInfo(String query) {
-        if (accessToken == null) {
-            accessToken = spotifyAccessTokenProvider.getAccessToken();
-        }
+        ensureAccessTokenExists();
 
-        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-        String url = "https://api.spotify.com/v1/search?q=" + encodedQuery + "&type=track&limit=1";
-
-        HttpGet get = new HttpGet(url);
-        get.setHeader("Authorization", "Bearer " + accessToken);
+        String url = buildSearchUrl(query);
+        HttpGet get = createHttpGetWithAuth(url);
 
         return getTrackInfo(get);
     }
@@ -49,12 +44,9 @@ public class SpotifySearchService {
 
             CloseableHttpResponse response = httpClient.execute(get);
 
-            if (response.getStatusLine().getStatusCode() == 401) {
-                accessToken = spotifyAccessTokenProvider.getAccessToken();
-            }
+            refreshTokenIfUnauthorized(response);
 
-            String responseBody = EntityUtils.toString(response.getEntity());
-            JsonNode jsonResponse = objectMapper.readTree(responseBody);
+            JsonNode jsonResponse = parseResponseToJson(response);
 
             return spotifySearchJsonParser.parse(jsonResponse);
         } catch (IOException e) {
@@ -64,5 +56,33 @@ public class SpotifySearchService {
 
     private String buildSearchQuery(String songTitle, String artist) {
         return "track:" + songTitle + " artist:" + artist;
+    }
+
+    private void ensureAccessTokenExists() {
+        if (accessToken == null) {
+            accessToken = spotifyAccessTokenProvider.getAccessToken();
+        }
+    }
+
+    private String buildSearchUrl(String query) {
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+        return "https://api.spotify.com/v1/search?q=" + encodedQuery + "&type=track&locale=ko_KR&limit=1";
+    }
+
+    private HttpGet createHttpGetWithAuth(String url) {
+        HttpGet get = new HttpGet(url);
+        get.setHeader("Authorization", "Bearer " + accessToken);
+        return get;
+    }
+
+    private void refreshTokenIfUnauthorized(CloseableHttpResponse response) {
+        if (response.getStatusLine().getStatusCode() == 401) {
+            accessToken = spotifyAccessTokenProvider.getAccessToken();
+        }
+    }
+
+    private JsonNode parseResponseToJson(CloseableHttpResponse response) throws IOException {
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return objectMapper.readTree(responseBody);
     }
 }
