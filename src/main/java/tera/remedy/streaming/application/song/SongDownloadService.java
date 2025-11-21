@@ -35,10 +35,10 @@ public class SongDownloadService {
         String hlsId = hlsService.convertToHls(audioPath);
 
         Song song = new Song(
+                hlsId,
                 trackInfo.title(),
                 trackInfo.artist(),
                 duration,
-                hlsId,
                 trackInfo.albumImageUrl()
         );
 
