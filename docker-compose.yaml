@@ -37,7 +37,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./songs/hls:/app/hls:ro
-        - nginx_logs:/var/log/nginx
+      - nginx_logs:/var/log/nginx
     depends_on:
       - remedy-streaming-app
     networks:
