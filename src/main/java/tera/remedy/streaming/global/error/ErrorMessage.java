@@ -12,6 +12,8 @@ public enum ErrorMessage {
 
     AUDIO_FILE_SAVE_FAILED("오디오 파일 저장 실패!"),
     DIRECTORY_CREATE_FAILED("디렉토리 생성 실패!"),
+
+    SONG_ALREADY_EXISTS("이미 존재하는 노래입니다."),
     ;
 
     public final String content;
