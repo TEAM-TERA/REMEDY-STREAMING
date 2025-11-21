@@ -95,6 +95,6 @@ public class HlsService {
     }
 
     private String buildHlsPath(String hlsId) {
-        return "hls/" + hlsId + "/playlist.m3u8";
+        return "hls/" + hlsId;
     }
 }
