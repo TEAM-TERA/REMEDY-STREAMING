@@ -1,6 +1,7 @@
 package tera.remedy.streaming.application.hls;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tera.remedy.streaming.application.hls.exception.HlsConvertFailedException;
 
@@ -15,8 +16,11 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class HlsService {
+    private final String HLS_BASE_PATH;
 
-    private static final String HLS_PATH = "/app/songs/hls";
+    public HlsService(@Value("${hls.base-path}") String hlsBasePath) {
+        HLS_BASE_PATH = hlsBasePath;
+    }
 
     public String convertToHls(String mp3FilePath) throws IOException, InterruptedException {
         log.info("HLS 변환 시작: {}", mp3FilePath);
@@ -52,7 +56,7 @@ public class HlsService {
     }
 
     private Path createHlsDirectory(String hlsId) throws IOException {
-        Path hlsDir = Paths.get(HLS_PATH, hlsId);
+        Path hlsDir = Paths.get(HLS_BASE_PATH, hlsId);
         Files.createDirectories(hlsDir);
         log.info("HLS 디렉토리 생성: {}", hlsDir);
         return hlsDir;
