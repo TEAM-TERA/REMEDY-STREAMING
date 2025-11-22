@@ -54,7 +54,7 @@ services:
     ports:
       - "${APPLICATION_PORT}:8080"
     volumes:
-      - ./songs:/app/songs
+      - ${SONG_PATH}:/app/songs
     networks:
       - test-remedy-network
 
