@@ -31,14 +31,10 @@ services:
   test-remedy-streaming-nginx:
     image: nginx:latest
     container_name: test-remedy-streaming-nginx
-    env_file:
-      - .env
-    environment:
-      - APP_SERVICE_NAME=${APP_SERVICE_NAME}
     ports:
       - "20222:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx-test.conf:/etc/nginx/nginx.conf:ro
       - ${SONG_PATH}/hls:/app/hls:ro
     depends_on:
       - test-remedy-streaming-app
