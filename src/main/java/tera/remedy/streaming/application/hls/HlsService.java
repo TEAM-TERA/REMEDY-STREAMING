@@ -18,7 +18,7 @@ import java.util.UUID;
 public class HlsService {
     private final String HLS_BASE_PATH;
 
-    public HlsService(@Value("${hls.base-path:/app/songs/hls}") String hlsBasePath) {
+    public HlsService(@Value("${hls.base-path}") String hlsBasePath) {
         HLS_BASE_PATH = hlsBasePath;
     }
 
