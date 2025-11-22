@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tera.remedy.streaming.application.song.SongDownloadService;
 import tera.remedy.streaming.domain.song.Song;
-import tera.remedy.streaming.presentation.song.dto.request.SongDownloadRequest;
-import tera.remedy.streaming.presentation.song.dto.response.SongDownloadResponse;
+import tera.remedy.streaming.application.dto.request.SongDownloadRequest;
+import tera.remedy.streaming.application.dto.response.SongDownloadResponse;
 
 import java.io.IOException;
 
@@ -28,7 +28,6 @@ public class SongController {
                 song.getTitle(),
                 song.getArtist(),
                 song.getDuration(),
-                song.getHlsId(),
                 song.getAlbumImagePath()
         );
 
