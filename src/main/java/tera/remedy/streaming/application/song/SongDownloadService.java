@@ -32,13 +32,13 @@ public class SongDownloadService {
 
         int duration = youtubeDownloadService.getDuration(songTitle, artist);
         String audioPath = youtubeDownloadService.downloadAudio(songTitle, artist);
-        String hlsPath = hlsService.convertToHls(audioPath);
+        String hlsId = hlsService.convertToHls(audioPath);
 
         Song song = new Song(
+                hlsId,
                 trackInfo.title(),
                 trackInfo.artist(),
                 duration,
-                hlsPath,
                 trackInfo.albumImageUrl()
         );
 
