@@ -9,3 +9,6 @@ spotify:
   client:
     id: ${SPOTIFY_CLIENT_ID}
     secret: ${SPOTIFY_CLIENT_SECRET}
+
+hls:
+  base-path: ${HLS_BASE_PATH}
