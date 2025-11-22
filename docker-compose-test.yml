@@ -13,7 +13,7 @@ services:
       - xpack.security.authc.api_key.enabled=false
       - ES_JAVA_OPTS=${ES_JAVA_OPTS}
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - test_elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - test-remedy-network
     command: >
@@ -63,5 +63,5 @@ networks:
     driver: bridge
 
 volumes:
-  elasticsearch_data:
+  test_elasticsearch_data:
     driver: local
