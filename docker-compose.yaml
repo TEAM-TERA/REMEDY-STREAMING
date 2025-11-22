@@ -31,6 +31,10 @@ services:
   remedy-streaming-nginx:
     image: nginx:latest
     container_name: remedy-streaming-nginx
+    env_file:
+      - .env
+    environment:
+      - APP_SERVICE_NAME=${APP_SERVICE_NAME}
     ports:
       - "80:80"
       - "8081:8081"
