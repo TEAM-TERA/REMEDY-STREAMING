@@ -13,6 +13,7 @@ services:
       - xpack.security.authc.api_key.enabled=true
       - ES_JAVA_OPTS=${ES_JAVA_OPTS}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - path.repo=/usr/share/elasticsearch/backup
     volumes:
       - test_elasticsearch_data:/usr/share/elasticsearch/data
     networks:
