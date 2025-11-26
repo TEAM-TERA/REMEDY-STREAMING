@@ -4,6 +4,8 @@ spring:
 
   elasticsearch:
     uris: ${ELASTICSEARCH_URL}
+    password: ${ELASTIC_PASSWORD}
+    username: ${ELASTIC_USERNAME}
 
 spotify:
   client:

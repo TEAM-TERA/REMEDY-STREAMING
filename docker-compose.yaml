@@ -54,6 +54,8 @@ services:
         condition: service_healthy
     environment:
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
     ports:
       - "${APPLICATION_PORT}:8080"
     volumes:
