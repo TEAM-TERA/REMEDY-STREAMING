@@ -9,9 +9,10 @@ services:
       - test.env
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
-      - xpack.security.authc.api_key.enabled=false
+      - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
       - ES_JAVA_OPTS=${ES_JAVA_OPTS}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     volumes:
       - test_elasticsearch_data:/usr/share/elasticsearch/data
     networks:
@@ -51,6 +52,8 @@ services:
         condition: service_healthy
     environment:
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
     ports:
       - "${APPLICATION_PORT}:8080"
     volumes:
