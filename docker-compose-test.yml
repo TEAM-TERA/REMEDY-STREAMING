@@ -24,7 +24,7 @@ services:
         /usr/local/bin/docker-entrypoint.sh eswrapper
       "
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://test-remedy-streaming-elastic:9200" ]
+      test: [ "CMD", "curl", "-f", "-u", "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}", "http://test-remedy-streaming-elastic:9200" ]
       interval: 10s
       timeout: 5s
       retries: 10
