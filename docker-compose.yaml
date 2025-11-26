@@ -23,7 +23,7 @@ services:
         /usr/local/bin/docker-entrypoint.sh eswrapper
       "
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      test: [ "CMD", "curl", "-f", "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}", "http://localhost:9200" ]
       interval: 10s
       timeout: 5s
       retries: 10
